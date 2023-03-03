@@ -1,4 +1,5 @@
 using HotelManagement.Presistance.IoC;
+using Hotelmanagment.Application.IoC;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
@@ -36,7 +37,10 @@ builder.Host.UseSerilog((ctx, lc) => lc
 
 );
 
-builder.Services.Services(builder.Configuration);
+builder.Services.ServicesConfigurationFrompresistance(builder.Configuration);
+builder.Services.ServiceConfigurationFromApplication();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

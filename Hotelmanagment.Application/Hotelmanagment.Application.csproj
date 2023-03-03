@@ -7,7 +7,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="FluentValidation" Version="11.5.1" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.5.1" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Hotlemanagment.Domain\Hotlemanagment.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Country\Handlers\Command\" />
+    <Folder Include="Features\Country\Handlers\Querries\" />
+    <Folder Include="Features\Country\Requests\Command\" />
+    <Folder Include="Features\Country\Requests\Qurries\" />
+    <Folder Include="Features\Hotel\Handler\Command\" />
+    <Folder Include="Features\Hotel\Handler\Querry\" />
+    <Folder Include="Features\Hotel\Request\Command\" />
+    <Folder Include="Features\Hotel\Request\Querry\" />
   </ItemGroup>
 
 </Project>

@@ -22,7 +22,7 @@ namespace HotelManagement.Presistance.Configuration.HotelConfigurations
                     Name = "Homa",
                     Address = "Tehran Azadi",
                     PhoneNumber = "02188888888",
-                    Rate = "5"
+                    Rate = 5
 
                 },
                 new Hotel
@@ -32,7 +32,7 @@ namespace HotelManagement.Presistance.Configuration.HotelConfigurations
                     Name = "Esteghlal",
                     Address = "Tehran Esteghlal",
                     PhoneNumber = "0216666666",
-                    Rate = "2"
+                    Rate = 2
 
                 },
                 new Hotel()
@@ -42,7 +42,7 @@ namespace HotelManagement.Presistance.Configuration.HotelConfigurations
                     Name = "Espinas",
                     Address = "Shiraz ",
                     PhoneNumber = "01355555588",
-                    Rate = "5"
+                    Rate = 3
 
                 }
             });

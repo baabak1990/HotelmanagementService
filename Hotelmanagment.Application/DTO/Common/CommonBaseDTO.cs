@@ -4,15 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hotlemanagment.Domain.Entity.Common
+namespace Hotelmanagment.Application.DTO.Common
 {
-    public partial class BaseEntity
+    public class CommonBaseDTO
     {
         public int Id { get; set; }
         public DateTime CreateDate { get; set; }
-        public string? CreationNote { get; set; }
         public DateTime? ModifyDate { get; set; }
-        public string? ModificationNote { get; set; }
-
     }
 }
