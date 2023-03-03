@@ -9,7 +9,6 @@ namespace Hotelmanagment.Application.DTO.Common
     public class CommonBaseDTO
     {
         public int Id { get; set; }
-        public DateTime CreateDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
+
     }
 }

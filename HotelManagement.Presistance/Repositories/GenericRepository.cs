@@ -54,6 +54,7 @@ namespace HotelManagement.Presistance.Repositories
         public async Task<T> GetAsync(Expression<Func<T, bool>> expression, List<string> includes = null)
         {
             IQueryable<T> query = _db;
+
             if (includes != null)
             {
                 foreach (var IncludeProperty in includes)
@@ -63,10 +64,6 @@ namespace HotelManagement.Presistance.Repositories
             }
 
             var entity = await query.AsNoTracking().FirstOrDefaultAsync(expression);
-            if (entity == null)
-            {
-                throw new Exception();
-            }
             return entity;
         }
 

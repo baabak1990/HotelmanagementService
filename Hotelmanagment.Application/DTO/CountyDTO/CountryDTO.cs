@@ -13,6 +13,6 @@ namespace Hotelmanagment.Application.DTO.CountyDTO
     {
         public string Name { get; set; }
         public string ShortName { get; set; }
-        public IList<HotelDTo> Hotels { get; set; }
+        public List<HotelDTo>? Hotels { get; set; }
     }
 }

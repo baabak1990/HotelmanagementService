@@ -16,6 +16,6 @@ namespace Hotlemanagment.Domain.Entity.Entities
 
 
         [NotMapped] 
-        public virtual IList<Hotel> Hotels { get; set; }
+        public  IList<Hotel>? Hotels { get; set; }
     }
 }

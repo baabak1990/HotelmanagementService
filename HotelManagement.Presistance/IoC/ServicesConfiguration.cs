@@ -22,6 +22,7 @@ namespace HotelManagement.Presistance.IoC
             });
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddTransient<IUnitOfWork,UnitOfWork>();
             return services;
         }
     }

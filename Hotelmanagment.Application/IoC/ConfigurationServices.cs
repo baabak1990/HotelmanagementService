@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Hotelmanagment.Application.IoC
@@ -14,8 +13,7 @@ namespace Hotelmanagment.Application.IoC
         public static IServiceCollection ServiceConfigurationFromApplication(this IServiceCollection services)
         {
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            services.AddMediatR(Assembly.GetExecutingAssembly());
-            return services;
+           return services;
         }
     }
 }
