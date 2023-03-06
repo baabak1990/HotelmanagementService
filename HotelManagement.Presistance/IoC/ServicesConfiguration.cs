@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using HotelManagement.Presistance.Context;
 using HotelManagement.Presistance.Repositories;
 using Hotelmanagment.Application.Contract.Repository;
+using Hotlemanagment.Domain.Entity.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,9 +22,11 @@ namespace HotelManagement.Presistance.IoC
             {
                 options.UseSqlServer(configuration.GetConnectionString("HotelmanagemntDb"));
             });
-
+            var builder = services.AddIdentityCore<ApiUser>(u => u.User.RequireUniqueEmail = true);
+            builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), services);
+            builder.AddEntityFrameworkStores<DefaultContext>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddTransient<IUnitOfWork,UnitOfWork>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
             return services;
         }
     }

@@ -14,10 +14,10 @@ namespace Hotelmanagement.Controllers
         #region Constructor
 
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<CountryController> _logger;
+        private readonly ILogger<HotelController> _logger;
         private readonly IMapper _mapper;
 
-        public HotelController(IUnitOfWork unitOfWork, ILogger<CountryController> logger, IMapper mapper)
+        public HotelController(IUnitOfWork unitOfWork, ILogger<HotelController> logger, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;

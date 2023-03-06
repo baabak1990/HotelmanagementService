@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Hotelmanagment.Application.DTO.CountyDTO;
 using Hotelmanagment.Application.DTO.HotleDTO;
+using Hotelmanagment.Application.DTO.UserDTO;
 using Hotlemanagment.Domain.Entity.Entities;
 
 namespace Hotelmanagment.Application.Profile
@@ -23,6 +24,12 @@ namespace Hotelmanagment.Application.Profile
 
             CreateMap<Country, CountryDTO>().ReverseMap();
             CreateMap<Country, CreateCountryDTO>().ReverseMap();
+
+            #endregion
+
+            #region Account
+
+            CreateMap<ApiUser, UserDTo>().ReverseMap();
 
             #endregion
         }
