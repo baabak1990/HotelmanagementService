@@ -1,3 +1,4 @@
+using HotelListingInfrastructure.cs.Configurations;
 using HotelManagement.Presistance.IoC;
 using Hotelmanagment.Application.IoC;
 using Microsoft.OpenApi.Models;
@@ -37,7 +38,7 @@ builder.Host.UseSerilog((ctx, lc) => lc
     .WriteTo.File(
         path: "logs\\log-.txt",
         outputTemplate: "{{timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}} [{{level:u3}}] {{message:lj}}{{NewLine}}{Exception}",
-        rollingInterval: RollingInterval.Day,
+        rollingInterval : RollingInterval.Day,
         restrictedToMinimumLevel: LogEventLevel.Information
     )
 
@@ -45,6 +46,7 @@ builder.Host.UseSerilog((ctx, lc) => lc
 
 builder.Services.ServicesConfigurationFrompresistance(builder.Configuration);
 builder.Services.ServiceConfigurationFromApplication();
+builder.Services.JwtConfig(builder.Configuration);
 
 
 var app = builder.Build();

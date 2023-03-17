@@ -22,6 +22,8 @@ namespace HotelManagement.Presistance.IoC
             {
                 options.UseSqlServer(configuration.GetConnectionString("HotelmanagemntDb"));
             });
+
+            
             var builder = services.AddIdentityCore<ApiUser>(u => u.User.RequireUniqueEmail = true);
             builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), services);
             builder.AddEntityFrameworkStores<DefaultContext>();

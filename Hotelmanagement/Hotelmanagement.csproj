@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HotelListingInfrastructure.cs\HotelListingInfrastructure.cs.csproj" />
     <ProjectReference Include="..\HotelManagement.Presistance\HotelManagement.Presistance.csproj" />
   </ItemGroup>
 
