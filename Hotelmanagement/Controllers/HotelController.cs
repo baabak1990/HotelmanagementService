@@ -2,8 +2,15 @@
 using Hotelmanagment.Application.Contract.Repository;
 using Hotelmanagment.Application.DTO.CountyDTO;
 using Hotelmanagment.Application.DTO.HotleDTO;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Hotelmanagment.Application.DTO.UserDTO.Validation;
+using Hotelmanagment.Application.DTO.HotleDTO.Validations;
+using Hotlemanagment.Domain.Entity.Entities;
+using Microsoft.Extensions.Logging;
 
 namespace Hotelmanagement.Controllers
 {
@@ -44,9 +51,12 @@ namespace Hotelmanagement.Controllers
             }
         }
 
-        [HttpGet("{id:int}")]
+
+        [HttpGet("{id:int}", Name = "GetHotel")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        //ToDo: Check Auth Problem Later
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult> Gethotel(int id)
         {
             try
@@ -62,6 +72,43 @@ namespace Hotelmanagement.Controllers
             }
         }
         #endregion
+
+        [HttpPost]
+        //[Authorize]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> CreateHotel(CreateHotelDTo hotelDto)
+        {
+            var validation = new CreateHotelDOTValidation();
+            var validationResult = await validation.ValidateAsync(hotelDto);
+            if (validationResult.IsValid == false)
+            {
+                _logger.LogError("Validation Error Happened");
+                return BadRequest();
+            }
+
+           
+            try
+            {
+                var hotel = _mapper.Map<Hotel>(hotelDto);
+                hotel.CreateDate=DateTime.Now;
+                hotel.CreationNote = "Created By Admin";
+                await _unitOfWork.Hotel.Add(hotel);
+                await _unitOfWork.Save();
+                return CreatedAtRoute("GetHotel", new { id = hotel.Id },hotel);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation(ex, "Error Happened While Try To Create New Hotel!");
+                throw new Exception("Some thing Went Wrong !!! Please Try Again");
+                return StatusCode(500);
+            }
+
+           
+        }
+
 
     }
 }

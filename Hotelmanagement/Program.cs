@@ -1,6 +1,10 @@
+using System.Text;
 using HotelListingInfrastructure.cs.Configurations;
+using HotelListingInfrastructure.cs.Services;
 using HotelManagement.Presistance.IoC;
 using Hotelmanagment.Application.IoC;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
@@ -38,15 +42,47 @@ builder.Host.UseSerilog((ctx, lc) => lc
     .WriteTo.File(
         path: "logs\\log-.txt",
         outputTemplate: "{{timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}} [{{level:u3}}] {{message:lj}}{{NewLine}}{Exception}",
-        rollingInterval : RollingInterval.Day,
+        rollingInterval: RollingInterval.Day,
         restrictedToMinimumLevel: LogEventLevel.Information
     )
 
 );
 
+#region Authentication
+
+//As You can see this section came from AppSetting.json file
+var jwtSettings = builder.Configuration.GetSection("jwt");
+//We create our variable in Environment (8 ;;
+//never Put It On AppSetting
+var key = Environment.GetEnvironmentVariable("KEY");
+
+builder.Services.AddAuthentication(option =>
+{
+    option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(option =>
+    {
+        option.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuer = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            //This Issuer name came from appSetting.json File
+            ValidIssuer = jwtSettings.GetSection("Issuer").Value,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
+        };
+    });
+
+
+builder.Services.AddScoped<IAuthManager, AuthManager>();
+
+#endregion
+
 builder.Services.ServicesConfigurationFrompresistance(builder.Configuration);
 builder.Services.ServiceConfigurationFromApplication();
-builder.Services.JwtConfig(builder.Configuration);
+//builder.Services.JwtConfig(builder.Configuration);
 
 
 var app = builder.Build();
@@ -59,11 +95,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseCors("AllowAll");
-
+app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
-
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 
 app.Run();

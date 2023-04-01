@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using AutoMapper;
+using HotelListingInfrastructure.cs.Services;
 using Hotelmanagment.Application.DTO.UserDTO;
 using Hotelmanagment.Application.DTO.UserDTO.Validation;
 using Hotlemanagment.Domain.Entity.Entities;
@@ -14,16 +15,16 @@ namespace Hotelmanagement.Controllers
     public class AccountController : ControllerBase
     {
         private readonly UserManager<ApiUser> _userManager;
-        //private readonly SignInManager<ApiUser> _signInManager;
+        private readonly IAuthManager _authManager;
         private readonly IMapper _mapper;
         private readonly ILogger<AccountController> _logger;
 
-        public AccountController(UserManager<ApiUser> userManager/*, SignInManager<ApiUser> signInManager*/, IMapper mapper, ILogger<AccountController> logger)
+        public AccountController(UserManager<ApiUser> userManager, IMapper mapper, ILogger<AccountController> logger, IAuthManager authManager)
         {
             _userManager = userManager;
-            //_signInManager = signInManager;
             _mapper = mapper;
             _logger = logger;
+            _authManager = authManager;
         }
 
         [HttpPost]
@@ -50,7 +51,7 @@ namespace Hotelmanagement.Controllers
                     return BadRequest(StatusCode(500));
                 }
 
-                var creation = await _userManager.CreateAsync(user,dto.Password);
+                var creation = await _userManager.CreateAsync(user, dto.Password);
                 if (!creation.Succeeded)
                 {
                     _logger.LogError("There is a Problem In creating Process !!");
@@ -67,36 +68,36 @@ namespace Hotelmanagement.Controllers
             }
         }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        //public async Task<ActionResult> Login([FromBody] LoginDTO dto)
-        //{
-        //    var validation = new LoginDToValidation();
-        //    var validationResult=await validation.ValidateAsync(dto);
-        //    if (validationResult.IsValid==false)
-        //    {
-        //        _logger.LogInformation($"Validation for {dto} failed !!!");
-        //        return Problem(statusCode:500);
-        //    }
+        [HttpPost("Login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> Login([FromBody] LoginDTO dto)
+        {
+            _logger.LogInformation($"Try to log with {dto.Email}");
 
-        //    try
-        //    {
-        //        var login = await _signInManager.PasswordSignInAsync(dto.Email, dto.Password, false, false);
-        //        if (!login.Succeeded)
-        //        {
-        //            _logger.LogError("There is a Problem In logging Process !!");
-        //            return Problem(statusCode:500);
-        //        }
+            var validation = new LoginDToValidation();
+            var validationResult = await validation.ValidateAsync(dto);
+            if (validationResult.IsValid == false)
+            {
+                _logger.LogInformation($"Validation for {dto} failed !!!");
+                return Problem(statusCode: 500);
+            }
 
-        //        return Ok(200);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, $"Something Went Wrong With {Login(dto)}");
-        //        return StatusCode(500, "the Error Occurred During This process , Please Try later ");
-        //    }
-        //}
+            try
+            {
+
+                if (!await _authManager.ValidateUser(dto))
+                {
+                    return Unauthorized();
+                }
+                return Accepted(new { Token = await _authManager.CreateToken() });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Something Went Wrong With {Login(dto)}");
+                return StatusCode(500, "the Error Occurred During This process , Please Try later ");
+            }
+        }
     }
 }

@@ -6,7 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using HotelManagement.Presistance.Context;
 using Hotelmanagment.Application.Contract.Repository;
+using Hotlemanagment.Domain.Entity.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using X.PagedList;
 
 namespace HotelManagement.Presistance.Repositories
 {
@@ -49,6 +52,22 @@ namespace HotelManagement.Presistance.Repositories
 
             return await query.AsNoTracking().ToListAsync();
 
+        }
+
+        public async Task<IPagedList<T>> GetAllWithPaging(RequestParams requestParams, List<string> includes = null)
+        {
+            IQueryable<T> query = _db;
+
+
+            if (includes != null)
+            {
+                foreach (var IncludeProperty in includes)
+                {
+                    query = query.Include(IncludeProperty);
+                }
+            }
+
+            return await query.AsNoTracking().ToPagedListAsync(requestParams.PageNumber, requestParams.pageSize);
         }
 
         public async Task<T> GetAsync(Expression<Func<T, bool>> expression, List<string> includes = null)

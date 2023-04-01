@@ -41,7 +41,7 @@ namespace HotelListingInfrastructure.cs.Services
             return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
         }
 
-        private JwtSecurityToken GenerateTokenOption(SigningCredentials signingCredential, List<Claim> claims)
+        private JwtSecurityToken GenerateTokenOption(SigningCredentials signingCredentials, List<Claim> claims)
         {
             var jwtSettings = _configuration.GetSection("jwt");
             var expiration = DateTime.Now.AddMinutes(Convert.ToDouble
@@ -49,14 +49,11 @@ namespace HotelListingInfrastructure.cs.Services
             var options = new JwtSecurityToken(
                 issuer: jwtSettings.GetSection("Issuer").Value,
                 claims: claims,
-                expires:expiration ,
-                signingCredentials: signingCredential
+                expires: expiration,
+                signingCredentials: signingCredentials 
                 );
 
             return options;
-
-
-
         }
 
         private async Task<List<Claim>> GetClaims()
